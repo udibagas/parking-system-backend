@@ -24,8 +24,9 @@ module.exports = {
         allowNull: false,
       },
       role: {
-        type: Sequelize.STRING,
+        type: Sequelize.INTEGER,
         allowNull: false,
+        defaultValue: 0,
       },
     });
   },

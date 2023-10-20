@@ -34,5 +34,5 @@ module.exports = (sequelize, DataTypes) => {
       timestamps: false,
     }
   );
-  return GateeOut;
+  return GateOut;
 };
