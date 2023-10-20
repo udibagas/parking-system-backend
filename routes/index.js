@@ -12,7 +12,8 @@ const routes = fs.readdirSync(__dirname).filter((file) => {
 
 for (let route of routes) {
   route = route.slice(0, -3);
-  router.use(`/${route}`, require(`./${route}`));
+  const controller = require(`../controllers/${route}.controller`);
+  router.use(`/${route}`, require(`./${route}`)(controller));
 }
 
 router.use((err, req, res, next) => {
