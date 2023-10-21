@@ -1,6 +1,7 @@
 const fs = require("fs");
 const path = require("path");
 const { ValidationError } = require("sequelize");
+const AuthController = require("../controllers/auth.controller");
 const basename = path.basename(__filename);
 const router = require("express").Router();
 
@@ -16,6 +17,8 @@ fs.readdirSync(__dirname)
     const handler = require(`./${route}`)(controller);
     router.use(`/${route}`, handler);
   });
+
+router.post("/login", AuthController.login);
 
 router.use((err, req, res, next) => {
   console.error(err);

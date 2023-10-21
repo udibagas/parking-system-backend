@@ -4,7 +4,6 @@ const NotFoundError = require("../errors/NotFoundError");
 module.exports = (Model) => {
   class ApiController {
     static async index(req, res, next) {
-      console.log(this);
       let { sort_prop, sort_order, keyword, paginated, page, pageSize } =
         req.query;
 
