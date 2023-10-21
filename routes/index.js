@@ -5,6 +5,9 @@ const AuthController = require("../controllers/auth.controller");
 const basename = path.basename(__filename);
 const router = require("express").Router();
 
+router.post("/login", AuthController.login);
+router.use(require("../middlewares/auth.middleware"));
+
 fs.readdirSync(__dirname)
   .filter((file) => {
     return (
@@ -17,8 +20,6 @@ fs.readdirSync(__dirname)
     const handler = require(`./${route}`)(controller);
     router.use(`/${route}`, handler);
   });
-
-router.post("/login", AuthController.login);
 
 router.use((err, req, res, next) => {
   console.error(err);
