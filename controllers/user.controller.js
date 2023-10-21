@@ -3,4 +3,4 @@ const ApiController = require("./api.controller")(User);
 
 class UserController extends ApiController {}
 
-module.exports = new UserController();
+module.exports = UserController;

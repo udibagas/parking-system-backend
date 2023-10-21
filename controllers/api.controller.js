@@ -3,12 +3,12 @@ const NotFoundError = require("../errors/NotFoundError");
 
 module.exports = (Model) => {
   class ApiController {
-    async index(req, res, next) {
+    static async index(req, res, next) {
       console.log(this);
       let { sort_prop, sort_order, keyword, paginated, page, pageSize } =
         req.query;
 
-      sort_prop ||= "name";
+      sort_prop ||= Model.defaultSort || "id";
       sort_order ||= "ASC";
       page ||= 1;
       pageSize ||= 10;
@@ -61,7 +61,7 @@ module.exports = (Model) => {
       }
     }
 
-    async show(req, res, next) {
+    static async show(req, res, next) {
       try {
         const user = await Model.findByPk(req.params.id);
         if (!user) throw new NotFoundError();
@@ -71,32 +71,32 @@ module.exports = (Model) => {
       }
     }
 
-    async create(req, res, next) {
+    static async create(req, res, next) {
       try {
         const user = await Model.create(req.body);
-        res.status(201).json({ message: "User telah disimpan", data: user });
+        res.status(201).json({ message: "Data telah disimpan", data: user });
       } catch (error) {
         next(error);
       }
     }
 
-    async update(req, res, next) {
+    static async update(req, res, next) {
       try {
         const user = Model.findByPk(req.params.id);
         if (!user) throw new NotFoundError();
         await user.update(req.body);
-        res.json({ message: "User telah diupdate", data: user });
+        res.json({ message: "Data telah diupdate", data: user });
       } catch (error) {
         next(error);
       }
     }
 
-    async destroy(req, res, next) {
+    static async destroy(req, res, next) {
       try {
         const user = await Model.findByPk(req.params.id);
         if (!user) throw new NotFoundError();
         await user.destroy();
-        res.json({ message: "User telah dihapus" });
+        res.json({ message: "Data telah dihapus" });
       } catch (error) {
         next(error);
       }

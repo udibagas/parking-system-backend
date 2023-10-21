@@ -1,17 +1,20 @@
 "use strict";
 const { Model } = require("sequelize");
+
 module.exports = (sequelize, DataTypes) => {
-  class Camera extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
+  class Kamera extends Model {
+    static searchable = ["name"];
+
+    static filterable = ["status"];
+
+    static defaultSort = "nama";
+
     static associate(models) {
       // define association here
     }
   }
-  Camera.init(
+
+  Kamera.init(
     {
       nama: DataTypes.STRING,
       snapshot_url: DataTypes.STRING,
@@ -22,9 +25,10 @@ module.exports = (sequelize, DataTypes) => {
     },
     {
       sequelize,
-      modelName: "Camera",
+      modelName: "Kamera",
       timestamps: false,
     }
   );
-  return Camera;
+
+  return Kamera;
 };
