@@ -1,24 +1,58 @@
 "use strict";
 const { Model } = require("sequelize");
+
 module.exports = (sequelize, DataTypes) => {
   class GateOut extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
     static associate(models) {
-      // define association here
+      this.belongsTo(models.Pos, { foreignKey: "pos_id" });
+    }
+
+    get kamera_list() {
+      return (async () => {
+        return await sequelize.models.Kamera.findAll({
+          where: { id: { [Op.in]: this.kamera } },
+        });
+      })();
     }
   }
+
   GateOut.init(
     {
-      nama: DataTypes.STRING,
-      shortcut_key: DataTypes.STRING,
-      jenis_kendaraan: DataTypes.JSON,
+      nama: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+          notNull: { msg: "Nama harus diisi" },
+          notEmpty: { msg: "Nama harus diisi" },
+        },
+      },
+      shortcut_key: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+          notNull: { msg: "Shortcut key harus diisi" },
+          notEmpty: { msg: "Shortcut key harus diisi" },
+          len: { args: 1, msg: "Shortcut harus 1 karakter" },
+        },
+      },
+      jenis_kendaraan: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+          notNull: { msg: "Jenis kendaraan harus diisi" },
+          notEmpty: { msg: "Jenis kendaraan harus diisi" },
+        },
+      },
       device: DataTypes.STRING,
       baudrate: DataTypes.INTEGER,
-      open_command: DataTypes.STRING,
+      open_command: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+          notNull: { msg: "Perintah buka harus diisi" },
+          notEmpty: { msg: "Perintah buka harus diisi" },
+        },
+      },
       close_command: DataTypes.STRING,
       kamera: DataTypes.JSON,
       pos_id: DataTypes.INTEGER,
@@ -34,5 +68,6 @@ module.exports = (sequelize, DataTypes) => {
       timestamps: false,
     }
   );
+
   return GateOut;
 };

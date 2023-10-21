@@ -2,18 +2,20 @@
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class AbsensiOperator extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
     static associate(models) {
-      // define association here
+      this.belongsTo(models.User, { foreignKey: "user_id" });
     }
   }
   AbsensiOperator.init(
     {
-      user_id: DataTypes.INTEGER,
+      user_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        validate: {
+          notNull: { msg: "User harus diisi" },
+          notEmpty: { msg: "User harus diisi" },
+        },
+      },
       login: DataTypes.DATE,
       logout: DataTypes.DATE,
     },
