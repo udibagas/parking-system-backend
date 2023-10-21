@@ -18,7 +18,7 @@ fs.readdirSync(__dirname)
     route = route.slice(0, -3);
     const controller = require(`../controllers/${route}.controller`);
     const handler = require(`./${route}`)(controller);
-    router.use(`/${route}`, handler);
+    router.use(`/api/${route}`, handler);
   });
 
 router.use((err, req, res, next) => {
