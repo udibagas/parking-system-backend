@@ -3,17 +3,10 @@ const NotFoundError = require("../errors/NotFoundError");
 
 module.exports = (Model) => {
   class ApiController {
-    static async index(req, res, next) {
-      let {
-        sort_prop,
-        sort_order,
-        keyword,
-        role,
-        status,
-        paginated,
-        page,
-        pageSize,
-      } = req.query;
+    async index(req, res, next) {
+      console.log(this);
+      let { sort_prop, sort_order, keyword, paginated, page, pageSize } =
+        req.query;
 
       sort_prop ||= "name";
       sort_order ||= "ASC";
@@ -22,28 +15,23 @@ module.exports = (Model) => {
 
       const options = {
         order: [[sort_prop, sort_order]],
-        where: {
-          name: { [Op.ne]: "controller" },
-        },
+        where: {},
       };
 
-      if (keyword) {
-        options.where = {
-          ...options.where,
-          [Op.or]: {
-            name: { [Op.iLike]: `%${keyword}%` },
-            email: { [Op.iLike]: `%${keyword}%` },
-          },
-        };
+      if (keyword && Model.searchable.length > 0) {
+        options.where[Op.or] = {};
+        for (let field of Model.searchable) {
+          options.where[Op.or][field] = { [Op.like]: `%${keyword}%` };
+        }
       }
 
-      if (role) {
-        options.where.role = { [Op.in]: role };
-      }
-
-      if (status !== undefined) {
-        options.where.status = status;
-      }
+      Model.filterable.forEach((col) => {
+        if (req.query[col] !== undefined) {
+          options.where[col] = {
+            [Op.in]: req.query[col],
+          };
+        }
+      });
 
       if (paginated) {
         options.limit = +pageSize;
@@ -52,8 +40,18 @@ module.exports = (Model) => {
 
       try {
         if (paginated) {
-          const users = await Model.findAndCountAll(options);
-          return res.json(users);
+          const { count: total, rows: data } = await Model.findAndCountAll(
+            options
+          );
+          const { offset } = options;
+          return res.json({
+            meta: {
+              total,
+              from: offset + 1,
+              to: offset + data.length,
+            },
+            data,
+          });
         }
 
         const users = await Model.findAll(options);
@@ -63,7 +61,7 @@ module.exports = (Model) => {
       }
     }
 
-    static async show(req, res, next) {
+    async show(req, res, next) {
       try {
         const user = await Model.findByPk(req.params.id);
         if (!user) throw new NotFoundError();
@@ -73,7 +71,7 @@ module.exports = (Model) => {
       }
     }
 
-    static async create(req, res, next) {
+    async create(req, res, next) {
       try {
         const user = await Model.create(req.body);
         res.status(201).json({ message: "User telah disimpan", data: user });
@@ -82,7 +80,7 @@ module.exports = (Model) => {
       }
     }
 
-    static async update(req, res, next) {
+    async update(req, res, next) {
       try {
         const user = Model.findByPk(req.params.id);
         if (!user) throw new NotFoundError();
@@ -93,7 +91,7 @@ module.exports = (Model) => {
       }
     }
 
-    static async destroy(req, res, next) {
+    async destroy(req, res, next) {
       try {
         const user = await Model.findByPk(req.params.id);
         if (!user) throw new NotFoundError();

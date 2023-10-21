@@ -4,17 +4,18 @@ const { ValidationError } = require("sequelize");
 const basename = path.basename(__filename);
 const router = require("express").Router();
 
-const routes = fs.readdirSync(__dirname).filter((file) => {
-  return (
-    file.indexOf(".") !== 0 && file !== basename && file.slice(-3) === ".js"
-  );
-});
-
-for (let route of routes) {
-  route = route.slice(0, -3);
-  const controller = require(`../controllers/${route}.controller`);
-  router.use(`/${route}`, require(`./${route}`)(controller));
-}
+fs.readdirSync(__dirname)
+  .filter((file) => {
+    return (
+      file.indexOf(".") !== 0 && file !== basename && file.slice(-3) === ".js"
+    );
+  })
+  .forEach((route) => {
+    route = route.slice(0, -3);
+    const controller = require(`../controllers/${route}.controller`);
+    const handler = require(`./${route}`)(controller);
+    router.use(`/${route}`, handler);
+  });
 
 router.use((err, req, res, next) => {
   console.error(err);
