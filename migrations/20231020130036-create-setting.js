@@ -57,7 +57,6 @@ module.exports = {
       },
       orientasi_kamera: {
         type: Sequelize.STRING,
-        allowNull: false,
       },
       id_pelanggan: {
         type: Sequelize.STRING,

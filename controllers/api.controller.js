@@ -17,20 +17,22 @@ module.exports = (Model) => {
         where: {},
       };
 
-      if (keyword && Model.searchable.length > 0) {
+      if (keyword && Model.searchable?.length > 0) {
         options.where[Op.or] = {};
         for (let field of Model.searchable) {
           options.where[Op.or][field] = { [Op.like]: `%${keyword}%` };
         }
       }
 
-      Model.filterable.forEach((col) => {
-        if (req.query[col] !== undefined) {
-          options.where[col] = {
-            [Op.in]: req.query[col],
-          };
-        }
-      });
+      if (Model.filterable) {
+        Model.filterable.forEach((col) => {
+          if (req.query[col] !== undefined) {
+            options.where[col] = {
+              [Op.in]: req.query[col],
+            };
+          }
+        });
+      }
 
       if (paginated) {
         options.limit = +pageSize;
@@ -53,8 +55,8 @@ module.exports = (Model) => {
           });
         }
 
-        const users = await Model.findAll(options);
-        res.json(users);
+        const instances = await Model.findAll(options);
+        res.json(instances);
       } catch (error) {
         next(error);
       }
@@ -62,9 +64,9 @@ module.exports = (Model) => {
 
     static async show(req, res, next) {
       try {
-        const user = await Model.findByPk(req.params.id);
-        if (!user) throw new NotFoundError();
-        res.json(user);
+        const instance = await Model.findByPk(req.params.id);
+        if (!instance) throw new NotFoundError();
+        res.json(instance);
       } catch (error) {
         next(error);
       }
@@ -72,8 +74,8 @@ module.exports = (Model) => {
 
     static async create(req, res, next) {
       try {
-        const user = await Model.create(req.body);
-        res.status(201).json({ message: "Data telah disimpan", data: user });
+        const data = await Model.create(req.body);
+        res.status(201).json({ message: "Data telah disimpan", data });
       } catch (error) {
         next(error);
       }
@@ -81,10 +83,10 @@ module.exports = (Model) => {
 
     static async update(req, res, next) {
       try {
-        const user = Model.findByPk(req.params.id);
-        if (!user) throw new NotFoundError();
-        await user.update(req.body);
-        res.json({ message: "Data telah diupdate", data: user });
+        const data = await Model.findByPk(req.params.id);
+        if (!data) throw new NotFoundError();
+        await data.update(req.body);
+        res.json({ message: "Data telah diupdate", data });
       } catch (error) {
         next(error);
       }
@@ -92,9 +94,9 @@ module.exports = (Model) => {
 
     static async destroy(req, res, next) {
       try {
-        const user = await Model.findByPk(req.params.id);
-        if (!user) throw new NotFoundError();
-        await user.destroy();
+        const instance = await Model.findByPk(req.params.id);
+        if (!instance) throw new NotFoundError();
+        await instance.destroy();
         res.json({ message: "Data telah dihapus" });
       } catch (error) {
         next(error);

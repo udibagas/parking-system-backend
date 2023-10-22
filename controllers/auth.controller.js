@@ -39,6 +39,32 @@ class AuthController {
       next(error);
     }
   }
+
+  static async logout(req, res) {
+    delete req.user;
+    res.status(204).send("");
+  }
+
+  static async user(req, res) {
+    res.json({ user: req.user });
+  }
+
+  static getNavigation(req, res) {
+    const nav = [
+      { label: "Home", icon: "el-icon-s-home", path: "/" },
+      { label: "Transaksi", icon: "el-icon-document-copy", path: "/transaksi" },
+      { label: "Keanggotaan", icon: "el-icon-bank-card", path: "/member" },
+    ];
+
+    const adminNav = [
+      { label: "Laporan", icon: "el-icon-data-analysis", path: "/report" },
+      { label: "User", icon: "el-icon-user", path: "/user" },
+      { label: "Log", icon: "el-icon-bell", path: "/notification" },
+      { label: "Pengaturan", icon: "el-icon-setting", path: "/setting" },
+    ];
+
+    req.user.role == 1 ? res.json([...nav, ...adminNav]) : res.json(nav);
+  }
 }
 
 module.exports = AuthController;

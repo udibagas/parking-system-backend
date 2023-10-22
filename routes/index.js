@@ -2,11 +2,16 @@ const fs = require("fs");
 const path = require("path");
 const { ValidationError } = require("sequelize");
 const AuthController = require("../controllers/auth.controller");
+const PosController = require("../controllers/pos.controller");
 const basename = path.basename(__filename);
 const router = require("express").Router();
 
-router.post("/login", AuthController.login);
+router.post("/api/auth/login", AuthController.login);
 router.use(require("../middlewares/auth.middleware"));
+router.get("/api/auth/user", AuthController.user);
+router.post("/api/auth/logout", AuthController.logout);
+router.get("/api/getNavigation", AuthController.getNavigation);
+router.get("/api/getPosByIp", PosController.getPosByIp);
 
 fs.readdirSync(__dirname)
   .filter((file) => {
