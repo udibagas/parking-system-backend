@@ -24,11 +24,13 @@ const {
   UserLogController,
 } = require("../controllers");
 
-router.post("/auth/login", AuthController.login);
+const { login, logout, user, getNavigation } = AuthController;
+
+router.post("/auth/login", login);
 router.use(require("../middlewares/auth.middleware"));
-router.get("/auth/user", AuthController.user);
-router.post("/auth/logout", AuthController.logout);
-router.get("/getNavigation", AuthController.getNavigation);
+router.get("/auth/user", user);
+router.post("/auth/logout", logout);
+router.get("/getNavigation", getNavigation);
 router.get("/getPosByIp", PosController.getPosByIp);
 
 router.resources([
