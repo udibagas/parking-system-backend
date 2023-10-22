@@ -9,6 +9,12 @@ module.exports = (sequelize, DataTypes) => {
     static filterable = ["role", "status"];
 
     static associate(models) {}
+
+    toJSON() {
+      const values = this.get();
+      delete values.password;
+      return values;
+    }
   }
 
   User.init(
@@ -21,17 +27,37 @@ module.exports = (sequelize, DataTypes) => {
           notEmpty: { msg: "Nama harus diisi" },
         },
       },
-      email: {
+      email: { type: DataTypes.STRING },
+      password: {
         type: DataTypes.STRING,
         allowNull: false,
         validate: {
-          notNull: { msg: "Email harus diisi" },
-          notEmpty: { msg: "Email harus diisi" },
-          isEmail: { msg: "Email tidak valid" },
+          notNull: { msg: "Password harus diisi" },
+          notEmpty: { msg: "Password harus diisi" },
+          min: { args: 6, msg: "Panjang password minimal 6 karakter" },
         },
       },
-      password: DataTypes.STRING,
-      role: DataTypes.INTEGER,
+      role: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        validate: {
+          notNull: { msg: "Role harus diisi" },
+          notEmpty: { msg: "Role harus diisi" },
+          isIn: {
+            args: [[0, 1]],
+            msg: "Invalid role",
+          },
+        },
+      },
+
+      status: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        validate: {
+          notNull: { msg: "Status harus diisi" },
+          notEmpty: { msg: "Status harus diisi" },
+        },
+      },
     },
     {
       sequelize,
@@ -45,6 +71,8 @@ module.exports = (sequelize, DataTypes) => {
       const salt = bcrypt.genSaltSync();
       user.password = bcrypt.hashSync(user.password, salt);
     }
+
+    user.email = new Date().getTime() + "@mail.com";
   });
 
   return User;
