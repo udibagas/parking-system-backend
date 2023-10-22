@@ -28,6 +28,7 @@ const { login, logout, user, getNavigation } = AuthController;
 
 router
   .post("/auth/login", login)
+  // only accessable by authenticated users
   .use(require("../middlewares/auth.middleware"))
   .get("/auth/user", user)
   .post("/auth/logout", logout)
@@ -57,6 +58,7 @@ router
     ["/snapshot", SnapshotController],
     ["/user", UserController, ["index", "show"]],
   ])
+  // only accessable by admin
   .use(require("../middlewares/admin.middleware"))
   .resources([
     ["/gateIn", GateInController, ["create", "update", "destroy"]],
