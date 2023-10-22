@@ -1,6 +1,5 @@
 const fs = require("fs");
 const path = require("path");
-const { pascal } = require("../helpers/string");
 const basename = path.basename(__filename);
 const controllers = {};
 
@@ -15,8 +14,7 @@ fs.readdirSync(__dirname)
   })
   .forEach((file) => {
     const controller = require(path.join(__dirname, file));
-    const name = pascal(file.replace(".controller.js", "Controller"));
-    controllers[name] = controller;
+    controllers[controller.name] = controller;
   });
 
 module.exports = controllers;
