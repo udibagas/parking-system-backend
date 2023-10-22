@@ -13,9 +13,31 @@ module.exports = (sequelize, DataTypes) => {
   }
   Printer.init(
     {
-      nama: DataTypes.STRING,
-      ip_address: DataTypes.STRING,
-      port: DataTypes.INTEGER,
+      nama: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+          notNull: { msg: "Nama harus diisi" },
+          notEmpty: { msg: "Nama harus diisi" },
+        },
+      },
+      ip_address: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+          notNull: { msg: "IP Address harus diisi" },
+          notEmpty: { msg: "IP Address harus diisi" },
+        },
+      },
+      port: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        validate: {
+          notNull: { msg: "Port harus diisi" },
+          notEmpty: { msg: "Port harus diisi" },
+          isNumeric: { msg: "Invalid port" },
+        },
+      },
       status: DataTypes.BOOLEAN,
     },
     {

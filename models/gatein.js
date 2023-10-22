@@ -4,15 +4,16 @@ const { Model, Op } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class GateIn extends Model {
     static associate(models) {
-      this.belongsTo(models.Printer, { foreignKey: "printer_id" });
+      this.belongsTo(models.Printer, {
+        foreignKey: "printer_id",
+        as: "printer",
+      });
     }
 
-    get kamera_list() {
-      return (async () => {
-        return await sequelize.models.Kamera.findAll({
-          where: { id: { [Op.in]: this.kamera } },
-        });
-      })();
+    async getKameraList() {
+      return await sequelize.models.Kamera.findAll({
+        where: { id: { [Op.in]: this.kamera } },
+      });
     }
   }
 
@@ -67,6 +68,9 @@ module.exports = (sequelize, DataTypes) => {
       sequelize,
       modelName: "GateIn",
       timestamps: false,
+      defaultScope: {
+        include: "printer",
+      },
     }
   );
 

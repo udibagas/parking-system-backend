@@ -1,5 +1,5 @@
 "use strict";
-const { Model } = require("sequelize");
+const { Model, Op } = require("sequelize");
 
 module.exports = (sequelize, DataTypes) => {
   class GateOut extends Model {
@@ -7,12 +7,10 @@ module.exports = (sequelize, DataTypes) => {
       this.belongsTo(models.Pos, { foreignKey: "pos_id" });
     }
 
-    get kamera_list() {
-      return (async () => {
-        return await sequelize.models.Kamera.findAll({
-          where: { id: { [Op.in]: this.kamera } },
-        });
-      })();
+    async getKameraList() {
+      return await sequelize.models.Kamera.findAll({
+        where: { id: { [Op.in]: this.kamera } },
+      });
     }
   }
 
@@ -36,7 +34,7 @@ module.exports = (sequelize, DataTypes) => {
         },
       },
       jenis_kendaraan: {
-        type: DataTypes.STRING,
+        type: DataTypes.JSON,
         allowNull: false,
         validate: {
           notNull: { msg: "Jenis kendaraan harus diisi" },

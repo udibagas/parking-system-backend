@@ -16,11 +16,38 @@ module.exports = (sequelize, DataTypes) => {
 
   Kamera.init(
     {
-      nama: DataTypes.STRING,
-      snapshot_url: DataTypes.STRING,
+      nama: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+          notNull: { msg: "Nama harus diisi" },
+          notEmpty: { msg: "Nama harus diisi" },
+        },
+      },
+      snapshot_url: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+          notNull: { msg: "Snapshot URL harus diisi" },
+          notEmpty: { msg: "Snapshot URL harus diisi" },
+          isUrl: { msg: "URL tidak valid" },
+        },
+      },
       username: DataTypes.STRING,
       password: DataTypes.STRING,
-      auth_type: DataTypes.STRING,
+      auth_type: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+          notNull: { msg: "Auth type harus diisi" },
+          notEmpty: { msg: "Auth type harus diisi" },
+          validAuth: (value) => {
+            if (!["basic", "digest"].includes(value)) {
+              throw new Error("Invalid auth type");
+            }
+          },
+        },
+      },
       status: DataTypes.BOOLEAN,
     },
     {

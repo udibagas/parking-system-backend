@@ -13,12 +13,34 @@ module.exports = (sequelize, DataTypes) => {
   }
   JenisKendaraan.init(
     {
-      nama: DataTypes.STRING,
-      shortcut_key: DataTypes.STRING,
+      nama: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        validate: {
+          notNull: { msg: "Nama harus diisi" },
+          notEmpty: { msg: "Nama harus diisi" },
+        },
+      },
+      shortcut_key: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        validate: {
+          notNull: { msg: "Shortcut key harus diisi" },
+          notEmpty: { msg: "Shortcut key harus diisi" },
+          len: { args: 1, msg: "Maksimum shortcut key 1 karakter" },
+        },
+      },
       tarif_flat: DataTypes.INTEGER,
       denda_ticket_hilang: DataTypes.INTEGER,
       is_default: DataTypes.BOOLEAN,
-      mode_tarif: DataTypes.INTEGER,
+      mode_tarif: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        validate: {
+          notNull: { msg: "Mode tarif harus diisi" },
+          notEmpty: { msg: "Mode tarif harus diisi" },
+        },
+      },
       menit_pertama: DataTypes.INTEGER,
       tarif_menit_pertama: DataTypes.INTEGER,
       menit_selanjutnya: DataTypes.INTEGER,

@@ -10,9 +10,30 @@ module.exports = (sequelize, DataTypes) => {
 
   Setting.init(
     {
-      jml_kendaraan_per_kartu: DataTypes.INTEGER,
-      masa_aktif_member: DataTypes.INTEGER,
-      nama_lokasi: DataTypes.STRING,
+      jml_kendaraan_per_kartu: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        validate: {
+          notNull: { msg: "Jumlah kendaraan per kartu harus diisi" },
+          notEmpty: { msg: "Jumlah kendaraan per kartu harus diisi" },
+        },
+      },
+      masa_aktif_member: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        validate: {
+          notNull: { msg: "Masa aktif member harus diisi" },
+          notEmpty: { msg: "Masa aktif member harus diisi" },
+        },
+      },
+      nama_lokasi: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+          notNull: { msg: "Nama lokasi harus diisi" },
+          notEmpty: { msg: "Nama lokasi harus diisi" },
+        },
+      },
       alamat_lokasi: DataTypes.STRING,
       info_tambahan_tiket: DataTypes.STRING,
       plat_nomor_default: DataTypes.STRING,

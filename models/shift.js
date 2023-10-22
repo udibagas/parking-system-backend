@@ -13,9 +13,30 @@ module.exports = (sequelize, DataTypes) => {
   }
   Shift.init(
     {
-      nama: DataTypes.STRING,
-      mulai: DataTypes.STRING,
-      selesai: DataTypes.STRING,
+      nama: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+          notNull: { msg: "Nama shift harus diisi" },
+          notEmpty: { msg: "Nama shift harus diisi" },
+        },
+      },
+      mulai: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+          notNull: { msg: "Waktu mulai harus diisi" },
+          notEmpty: { msg: "Waktu mulai harus diisi" },
+        },
+      },
+      selesai: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+          notNull: { msg: "Waktu selesai harus diisi" },
+          notEmpty: { msg: "Waktu selesai harus diisi" },
+        },
+      },
     },
     {
       sequelize,
