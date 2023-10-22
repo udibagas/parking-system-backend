@@ -13,7 +13,15 @@ module.exports = (sequelize, DataTypes) => {
   }
   GroupMember.init(
     {
-      nama: DataTypes.STRING,
+      nama: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: true,
+        validate: {
+          notNull: { msg: "Nama harus diisi" },
+          notEmpty: { msg: "Nama harus diisi" },
+        },
+      },
       keterangan: DataTypes.STRING,
       contact_person_name: DataTypes.STRING,
       contact_person_email: DataTypes.STRING,

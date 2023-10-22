@@ -8,14 +8,35 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+      this.belongsTo(models.Member, { foreignKey: "member_id", as: "member" });
     }
   }
   MemberVehicle.init(
     {
-      member_id: DataTypes.INTEGER,
-      jenis_kendaraan: DataTypes.STRING,
-      plat_nomor: DataTypes.STRING,
+      member_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        validate: {
+          notNull: { msg: "Member harus diisi" },
+          notEmpty: { msg: "Member harus diisi" },
+        },
+      },
+      jenis_kendaraan: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+          notNull: { msg: "Jenis kendaraan harus diisi" },
+          notEmpty: { msg: "Jenis kendaraan harus diisi" },
+        },
+      },
+      plat_nomor: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+          notNull: { msg: "Plat nomor harus diisi" },
+          notEmpty: { msg: "Plat nomor harus diisi" },
+        },
+      },
       merk: DataTypes.STRING,
       tipe: DataTypes.STRING,
       tahun: DataTypes.INTEGER,
