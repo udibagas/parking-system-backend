@@ -2,7 +2,7 @@ const { GateIn } = require("../models");
 const ApiController = require("./api.controller")(GateIn);
 
 class GateInController extends ApiController {
-  static async index(req, res, next) {
+  static async index(req, res) {
     let { paginated, page, pageSize } = req.query;
 
     page ||= 1;
@@ -18,36 +18,30 @@ class GateInController extends ApiController {
       options.offset = (page - 1) * pageSize;
     }
 
-    try {
-      if (paginated) {
-        let { count: total, rows: data } = await GateIn.findAndCountAll(
-          options
-        );
+    if (paginated) {
+      let { count: total, rows: data } = await GateIn.findAndCountAll(options);
 
-        data = await Promise.all(
-          data.map(async (d) => {
-            return { ...d.toJSON(), kameraList: await d.getKameraList() };
-          })
-        );
+      data = await Promise.all(
+        data.map(async (d) => {
+          return { ...d.toJSON(), kameraList: await d.getKameraList() };
+        })
+      );
 
-        console.log(data);
+      console.log(data);
 
-        const { offset } = options;
-        return res.json({
-          meta: {
-            total,
-            from: offset + 1,
-            to: offset + data.length,
-          },
-          data,
-        });
-      }
-
-      const instances = await GateIn.findAll(options);
-      res.json(instances);
-    } catch (error) {
-      next(error);
+      const { offset } = options;
+      return res.json({
+        meta: {
+          total,
+          from: offset + 1,
+          to: offset + data.length,
+        },
+        data,
+      });
     }
+
+    const instances = await GateIn.findAll(options);
+    res.json(instances);
   }
 }
 
