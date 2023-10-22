@@ -1,48 +1,24 @@
-const fs = require("fs");
-const path = require("path");
-const { ValidationError } = require("sequelize");
-const AuthController = require("../controllers/auth.controller");
-const PosController = require("../controllers/pos.controller");
-const basename = path.basename(__filename);
 const router = require("express").Router();
 
-router.post("/api/auth/login", AuthController.login);
-router.use(require("../middlewares/auth.middleware"));
-router.get("/api/auth/user", AuthController.user);
-router.post("/api/auth/logout", AuthController.logout);
-router.get("/api/getNavigation", AuthController.getNavigation);
-router.get("/api/getPosByIp", PosController.getPosByIp);
+router.resource = function (
+  path,
+  controller,
+  methods = ["index", "show", "create", "update", "destroy"]
+) {
+  const { index, show, create, update, destroy } = controller; // class with static method
+  if (methods.includes("index")) this.get(path, index);
+  if (methods.includes("show")) this.get(`${path}/:id`, show);
+  if (methods.includes("create")) this.post(path, create);
+  if (methods.includes("update")) this.put(`${path}/:id`, update);
+  if (methods.includes("destroy")) this.delete(`${path}/:id`, destroy);
+  return this;
+};
 
-fs.readdirSync(__dirname)
-  .filter((file) => {
-    return (
-      file.indexOf(".") !== 0 && file !== basename && file.slice(-3) === ".js"
-    );
-  })
-  .forEach((route) => {
-    route = route.slice(0, -3);
-    const controller = require(`../controllers/${route}.controller`);
-    const handler = require(`./${route}`)(controller);
-    router.use(`/api/${route}`, handler);
-  });
-
-router.use((err, req, res, next) => {
-  console.error(err);
-  const errors = {};
-
-  if (err instanceof ValidationError) {
-    err.status = 422;
-    for (let e of err.errors) {
-      if (errors[e.path] === undefined) {
-        errors[e.path] = [];
-      }
-
-      errors[e.path].push(e.message);
-    }
+router.resources = function (resources) {
+  for (let resource of resources) {
+    const [path, controller, methods] = resource;
+    this.resource(path, controller, methods);
   }
-
-  const { name, message } = err;
-  res.status(err.status || 500).json({ name, message, errors });
-});
+};
 
 module.exports = router;

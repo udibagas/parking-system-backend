@@ -30,8 +30,6 @@ class GateOutController extends ApiController {
           })
         );
 
-        console.log(data);
-
         const { offset } = options;
         return res.json({
           meta: {
@@ -43,7 +41,12 @@ class GateOutController extends ApiController {
         });
       }
 
-      const instances = await GateOut.findAll(options);
+      let instances = await GateOut.findAll(options);
+      instances = await Promise.all(
+        instances.map(async (d) => {
+          return { ...d.toJSON(), kameraList: await d.getKameraList() };
+        })
+      );
       res.json(instances);
     } catch (error) {
       next(error);

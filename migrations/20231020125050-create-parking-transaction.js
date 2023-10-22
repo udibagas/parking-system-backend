@@ -29,7 +29,7 @@ module.exports = {
       },
       gate_out_id: {
         type: Sequelize.INTEGER,
-        allowNull: false,
+        allowNull: true,
         references: {
           model: "GateOuts",
         },
@@ -55,7 +55,7 @@ module.exports = {
       },
       user_id: {
         type: Sequelize.INTEGER,
-        allowNull: false,
+        allowNull: true,
         references: {
           model: "Users",
         },
@@ -64,7 +64,7 @@ module.exports = {
       },
       member_id: {
         type: Sequelize.INTEGER,
-        allowNull: false,
+        allowNull: true,
         references: {
           model: "Members",
         },

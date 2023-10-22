@@ -1,7 +1,7 @@
-const { verify, decode } = require("jsonwebtoken");
+const { verify } = require("jsonwebtoken");
 const { User } = require("../models");
 
-const auth = async (req, res, next) => {
+module.exports = async (req, res, next) => {
   const bearerHeader = req.headers.authorization;
   const error = new Error();
   error.status = 403;
@@ -29,8 +29,6 @@ const auth = async (req, res, next) => {
 
     next();
   } catch (error) {
-    return next(error);
+    next(error);
   }
 };
-
-module.exports = auth;
