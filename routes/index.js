@@ -19,6 +19,8 @@ router.resources = function (resources) {
     const [path, controller, methods] = resource;
     this.resource(path, controller, methods);
   }
+
+  return this;
 };
 
 module.exports = router;
