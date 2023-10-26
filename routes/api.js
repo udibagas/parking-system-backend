@@ -1,4 +1,5 @@
 const router = require("./router");
+const isAdmin = require("../middlewares/admin.middleware");
 
 const {
   AbsensiOperatorController,
@@ -37,9 +38,9 @@ router
   .resources([
     ["/absensiOperator", AbsensiOperatorController],
     ["/areaParkir", AreaParkirController],
-    ["/gateIn", GateInController],
+    ["/gateIn", GateInController, ["index"]],
     ["/gateOut", GateOutController],
-    ["/groupMember", GroupMemberController],
+    ["/groupMember", GroupMemberController, ["index"]],
     ["/jenisKendaraan", JenisKendaraanController],
     ["/kamera", KameraController],
     ["/manualOpenLog", ManualOpenLogController],
@@ -54,6 +55,11 @@ router
     ["/snapshot", SnapshotController],
     ["/user", UserController],
     ["/userLog", UserLogController],
-  ]);
+  ])
+  .use(isAdmin)
+  .resource("/user", UserController, ["index", "create", "destroy"])
+  .resource("/gateIn", GateInController, ["create", "update", "destroy"])
+  .resource("/gateOut", GateOutController, ["create", "update", "destroy"])
+  .resource("/groupMember", GateOutController, ["create", "update", "destroy"]);
 
 module.exports = router;
