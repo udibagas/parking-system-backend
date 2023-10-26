@@ -1,21 +1,15 @@
 const router = require("express").Router();
 const asyncHandler = require("express-async-handler");
 
-router.resource = function (
-  path,
-  controller,
-  methods = ["index", "show", "create", "update", "destroy"]
-) {
+router.resource = function (path, controller) {
   const { index, show, create, update, destroy } = controller; // class with static method
-  for (let m of methods) {
+  for (let m of controller.methods) {
     if (m == "index") this.get(path, asyncHandler(index));
     if (m == "show") this.get(`${path}/:id`, asyncHandler(show));
     if (m == "create") this.post(path, asyncHandler(create));
     if (m == "update") this.put(`${path}/:id`, asyncHandler(update));
     if (m == "destroy") this.delete(`${path}/:id`, asyncHandler(destroy));
   }
-
-  console.log(controller.name);
 
   return this;
 };
