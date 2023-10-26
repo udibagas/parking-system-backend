@@ -1,5 +1,4 @@
 const router = require("./index");
-const manualOpen = require("../middlewares/manualOpen.middleware");
 
 const {
   AbsensiOperatorController,
@@ -23,61 +22,38 @@ const {
   UserController,
   UserLogController,
 } = require("../controllers");
+const asyncHandler = require("express-async-handler");
 
 const { login, logout, user, getNavigation } = AuthController;
 
 router
-  .post("/auth/login", login)
+  .post("/auth/login", asyncHandler(login))
   // only accessable by authenticated users
   .use(require("../middlewares/auth.middleware"))
-  .get("/auth/user", user)
-  .post("/auth/logout", logout)
-  .get("/getNavigation", getNavigation)
-  .get("/getPosByIp", PosController.getPosByIp)
+  .get("/auth/user", asyncHandler(user))
+  .post("/auth/logout", asyncHandler(logout))
+  .get("/getNavigation", asyncHandler(getNavigation))
+  .get("/getPosByIp", asyncHandler(PosController.getPosByIp))
   .resources([
     ["/absensiOperator", AbsensiOperatorController],
     ["/areaParkir", AreaParkirController],
-    ["/gateIn", GateInController, ["index"]],
-    ["/gateOut", GateOutController, ["index"]],
-    ["/groupMember", GroupMemberController, ["index"]],
-    ["/jenisKendaraan", JenisKendaraanController, ["index"]],
-    ["/kamera", KameraController, ["index"]],
+    ["/gateIn", GateInController],
+    ["/gateOut", GateOutController],
+    ["/groupMember", GroupMemberController],
+    ["/jenisKendaraan", JenisKendaraanController],
+    ["/kamera", KameraController],
     ["/manualOpenLog", ManualOpenLogController],
-    ["/member", MemberController, ["index", "show", "create", "update"]],
-    ["/memberRenewal", MemberRenewalController, ["index", "create"]],
-    ["/memberVehicle", MemberVehicleController, ["destroy"]],
-    [
-      "/parkingTransaction",
-      ParkingTransactionController,
-      ["index", "show", "update", "destroy"],
-    ],
-    ["/pos", PosController, ["index"]],
-    ["/printer", PrinterController, ["index"]],
-    ["/setting", SettingController, ["index"]],
+    ["/member", MemberController],
+    ["/memberRenewal", MemberRenewalController],
+    ["/memberVehicle", MemberVehicleController],
+    ["/parkingTransaction", ParkingTransactionController],
+    ["/pos", PosController],
+    ["/printer", PrinterController],
+    ["/setting", SettingController],
     ["/shift", ShiftController],
     ["/snapshot", SnapshotController],
-    ["/user", UserController, ["index", "show"]],
-  ])
-  // only accessable by admin
-  .use(require("../middlewares/admin.middleware"))
-  .resources([
-    ["/gateIn", GateInController, ["create", "update", "destroy"]],
-    ["/gateOut", GateOutController, ["create", "update", "destroy"]],
-    ["/groupMember", GroupMemberController, ["create", "update", "destroy"]],
-    [
-      "/jenisKendaraan",
-      JenisKendaraanController,
-      ["create", "update", "destroy"],
-    ],
-    ["/kamera", KameraController, ["create", "update", "destroy"]],
-    ["/member", MemberController, ["destroy"]],
-    ["/memberRenewal", MemberRenewalController, ["update", "destroy"]],
-    ["/pos", PosController, ["create", "update", "destroy"]],
-    ["/printer", PrinterController, ["create", "update", "destroy"]],
-    ["/setting", SettingController, ["create", "update"]],
-    ["/user", UserController, ["create", "update", "destroy"]],
+    ["/user", UserController],
     ["/userLog", UserLogController],
-  ])
-  .post("/parkingTransaction", manualOpen, ParkingTransactionController.create);
+  ]);
 
 module.exports = router;
