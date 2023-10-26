@@ -20,6 +20,7 @@ class AuthController {
           name: email,
           email,
         },
+        status: true,
       },
     });
 
