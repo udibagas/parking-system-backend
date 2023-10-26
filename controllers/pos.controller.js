@@ -2,6 +2,8 @@ const { Pos } = require("../models");
 const ApiController = require("./api.controller")(Pos);
 
 class PosController extends ApiController {
+  static methods = ["index", "create", "update", "destroy"];
+
   static async getPosByIp(req, res) {
     console.log(req.ips);
     const pos = await Pos.findOne({ where: { ip_address: req.ip } });

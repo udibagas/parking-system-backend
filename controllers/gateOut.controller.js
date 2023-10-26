@@ -2,6 +2,8 @@ const { GateOut } = require("../models");
 const ApiController = require("./api.controller")(GateOut);
 
 class GateOutController extends ApiController {
+  static methods = ["index", "create", "update", "destroy"];
+
   static async index(req, res) {
     let { paginated, page, pageSize } = req.query;
 

@@ -3,6 +3,8 @@ const { Member, MemberVehicle, sequelize } = require("../models");
 const ApiController = require("./api.controller")(Member);
 
 class MemberController extends ApiController {
+  static methods = ["index", "create", "update", "destroy"];
+
   static async create(req, res) {
     const data = await sequelize.transaction(async (t) => {
       const member = await Member.create(req.body, {

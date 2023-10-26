@@ -2,6 +2,8 @@ const { GateIn } = require("../models");
 const ApiController = require("./api.controller")(GateIn);
 
 class GateInController extends ApiController {
+  static methods = ["index", "create", "update", "destroy"];
+
   static async index(req, res) {
     let { paginated, page, pageSize } = req.query;
 
