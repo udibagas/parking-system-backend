@@ -1,4 +1,4 @@
-const router = require("./index");
+const router = require("./router");
 
 const {
   AbsensiOperatorController,
