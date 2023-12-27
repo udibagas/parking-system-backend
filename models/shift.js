@@ -10,7 +10,16 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
     }
+
+    static async getShiftIdByTime(time) {
+      const shift = await this.findOne({
+        where: sequelize.literal(`'${time}' BETWEEN mulai AND selesai`),
+      });
+
+      return shift ? shift.id : null;
+    }
   }
+
   Shift.init(
     {
       nama: {
