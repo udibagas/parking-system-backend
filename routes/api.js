@@ -28,11 +28,11 @@ const asyncHandler = require("express-async-handler");
 const { login, logout, user, getNavigation } = AuthController;
 
 router
-  .post("/auth/login", asyncHandler(login))
+  .post("/login", asyncHandler(login))
   // only accessable by authenticated users
   .use(require("../middlewares/auth.middleware"))
-  .get("/auth/user", asyncHandler(user))
-  .post("/auth/logout", asyncHandler(logout))
+  .get("/me", asyncHandler(user))
+  .post("/logout", asyncHandler(logout))
   .get("/getNavigation", asyncHandler(getNavigation))
   .get("/getPosByIp", asyncHandler(PosController.getPosByIp))
   .resources([
