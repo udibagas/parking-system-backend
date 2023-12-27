@@ -35,6 +35,10 @@ router
   .post("/logout", asyncHandler(logout))
   .get("/getNavigation", asyncHandler(getNavigation))
   .get("/getPosByIp", asyncHandler(PosController.getPosByIp))
+  .get(
+    "/memberRenewal/reportDaily",
+    asyncHandler(MemberRenewalController.reportDaily)
+  )
   .resources([
     ["/absensiOperator", AbsensiOperatorController],
     ["/areaParkir", AreaParkirController],
