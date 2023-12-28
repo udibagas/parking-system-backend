@@ -4,7 +4,8 @@
   "description": "Parking System Backend",
   "main": "app.js",
   "scripts": {
-    "test": "npm run test"
+    "test": "npm run test",
+    "dev": "nodemon app.js"
   },
   "repository": {
     "type": "git",
