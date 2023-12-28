@@ -1,15 +1,45 @@
 "use strict";
-const { Model } = require("sequelize");
+const { Model, QueryTypes } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class MemberRenewal extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
     static associate(models) {
       this.belongsTo(models.User, { foreignKey: "user_id", as: "user" });
       this.belongsTo(models.Member, { foreignKey: "member_id", as: "member" });
+    }
+
+    static async report(start, end) {
+      const query = `
+        SELECT
+          DATE(createdAt) AS tanggal,
+          COUNT(id) AS jumlah,
+          SUM(jumlah) AS pendapatan
+        FROM MemberRenewals
+        WHERE DATE(createdAt) BETWEEN ? AND ?
+        GROUP BY DATE(createdAt)
+      `;
+
+      return await sequelize.query(query, {
+        type: QueryTypes.SELECT,
+        replacements: [start, end],
+      });
+    }
+
+    static async dailyReport(date) {
+      const data = await this.findAll({
+        where: sequelize.literal(`DATE(MemberRenewal.createdAt) = '${date}'`),
+        attributes: ["id", "jumlah"],
+        order: [["createdAt", "asc"]],
+        include: {
+          association: "member",
+          attributes: ["nama", "nomor_kartu"],
+          include: {
+            association: "vehicles",
+            attributes: ["plat_nomor"],
+          },
+        },
+      });
+
+      return data;
     }
 
     toJSON() {

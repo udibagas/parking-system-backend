@@ -12,20 +12,14 @@ class MemberRenewalController extends ApiController {
 
   static async reportDaily(req, res) {
     const { date } = req.query;
+    const data = await MemberRenewal.dailyReport(date);
+    res.json(data);
+  }
 
-    const data = await MemberRenewal.findAll({
-      where: Sequelize.literal(`DATE(MemberRenewal.updatedAt) = '${date}'`),
-      attributes: ["id", "jumlah"],
-      include: {
-        association: "member",
-        attributes: ["nama", "nomor_kartu"],
-        include: {
-          association: "vehicles",
-          attributes: ["plat_nomor"],
-        },
-      },
-    });
-
+  static async report(req, res) {
+    const { dateRange } = req.query;
+    const [start, end] = dateRange;
+    const data = await MemberRenewal.report(start, end);
     res.json(data);
   }
 }
